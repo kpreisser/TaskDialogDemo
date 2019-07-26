@@ -78,12 +78,12 @@ namespace TaskDialogDemo
                 EnableHyperlinks = true,
                 AllowCancel = true,
 
-                CheckBox =
+                CheckBox = new TaskDialogCheckBox()
                 {
                     Text = "Do not show again"
                 },
 
-                Footer =
+                Footer = new TaskDialogFooter()
                 {
                     Text = "<a href=\"link1\">How should I decide?</a>",
                     Icon = TaskDialogStandardIcon.Information
@@ -156,7 +156,7 @@ namespace TaskDialogDemo
                 CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks,
                 AllowCancel = true,
 
-                Footer =
+                Footer = new TaskDialogFooter()
                 {
                     Text = "Note: You can change the difficulty level later " +
                         "by clicking Options on the Game menu.",
@@ -200,7 +200,7 @@ namespace TaskDialogDemo
                 Instruction = "Connection lost; reconnecting...",
                 Text = string.Format(textFormat, (remainingTenthSeconds + 9) / 10),
                 Icon = this.Icon,
-                ProgressBar =
+                ProgressBar = new TaskDialogProgressBar()
                 {
                     State = TaskDialogProgressBarState.Paused
                 }
@@ -256,7 +256,7 @@ namespace TaskDialogDemo
                 // A modeless dialog can be minimizable.
                 CanBeMinimized = true,
 
-                CheckBox =
+                CheckBox = new TaskDialogCheckBox()
                 {
                     Text = "I know what I'm doing"
                 },
@@ -284,12 +284,12 @@ namespace TaskDialogDemo
                 Icon = TaskDialogStandardIcon.Information,
                 CanBeMinimized = true,
 
-                ProgressBar =
+                ProgressBar = new TaskDialogProgressBar()
                 {
                     State = TaskDialogProgressBarState.Marquee
                 },
 
-                Expander =
+                Expander = new TaskDialogExpander()
                 {
                     Text = "Initializing...",
                     ExpandFooterArea = true
@@ -359,7 +359,7 @@ namespace TaskDialogDemo
 
             // Simulate work by using a WinForms timer where we are updating the
             // progress bar and the expander with the current status.
-            System.Windows.Forms.Timer timer = null;
+            Timer? timer = null;
             inProgressPage.Created += (s, e) =>
             {
                 // The page is now being displayed, so create the timer.
@@ -396,7 +396,7 @@ namespace TaskDialogDemo
             inProgressPage.Destroyed += (s, e) =>
             {
                 // The page is being destroyed, so dispose of the timer.
-                timer.Dispose();
+                timer!.Dispose();
                 timer = null;
             };
 
@@ -478,8 +478,10 @@ namespace TaskDialogDemo
             page1.HelpRequest += (s, e) => Console.WriteLine("Page1 HelpRequest");
             page1.HyperlinkClicked += (s, e) => Console.WriteLine("Page1 HyperlinkClicked: " + e.Hyperlink);
 
-            page1.Expander.Text = "Expander";
-            page1.Expander.ExpandFooterArea = true;
+            page1.Expander = new TaskDialogExpander("Expander")
+            {
+                ExpandFooterArea = true
+            };
             page1.Expander.ExpandedChanged += (s, e) => Console.WriteLine("Expander ExpandedChanged: " + page1.Expander.Expanded);
 
             var buttonOK = page1.StandardButtons.Add(TaskDialogResult.OK);
@@ -518,7 +520,7 @@ namespace TaskDialogDemo
                 dialog.Page = page2;
             };
 
-            page1.CheckBox.Text = "CheckBox";
+            page1.CheckBox = new TaskDialogCheckBox("CheckBox");
             page1.CheckBox.CheckedChanged += (s, e) => Console.WriteLine("CheckBox CheckedChanged: " + page1.CheckBox.Checked);
 
             var radioButton1 = page1.RadioButtons.Add("RadioButton 1");
