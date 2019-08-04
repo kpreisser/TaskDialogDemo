@@ -486,9 +486,9 @@ namespace TaskDialogDemo
 
             var buttonOK = page1.StandardButtons.Add(TaskDialogResult.OK);
             var buttonHelp = page1.StandardButtons.Add(TaskDialogResult.Help);
-            var buttonCancelClose = page1.CustomButtons.Add("Cancel Close");
-            var buttonShowInnerDialog = page1.CustomButtons.Add("Show (modeless) Inner Dialog", "(and don't cancel the Close)");
-            var buttonNavigate = page1.CustomButtons.Add("Navigate");
+            var buttonCancelClose = page1.CustomButtons.Add("C&ancel Close");
+            var buttonShowInnerDialog = page1.CustomButtons.Add("&Show (modeless) Inner Dialog", "(and don't cancel the Close)");
+            var buttonNavigate = page1.CustomButtons.Add("&Navigate");
 
             buttonOK.Click += (s, e) => Console.WriteLine($"Button '{s}' Click");
             buttonHelp.Click += (s, e) => Console.WriteLine($"Button '{s}' Click");
@@ -523,8 +523,8 @@ namespace TaskDialogDemo
             page1.CheckBox = new TaskDialogCheckBox("CheckBox");
             page1.CheckBox.CheckedChanged += (s, e) => Console.WriteLine("CheckBox CheckedChanged: " + page1.CheckBox.Checked);
 
-            var radioButton1 = page1.RadioButtons.Add("RadioButton 1");
-            var radioButton2 = page1.RadioButtons.Add("RadioButton 2");
+            var radioButton1 = page1.RadioButtons.Add("Radi&oButton 1");
+            var radioButton2 = page1.RadioButtons.Add("RadioB&utton 2");
 
             radioButton1.CheckedChanged += (s, e) => Console.WriteLine("RadioButton1 CheckedChanged: " + radioButton1.Checked);
             radioButton2.CheckedChanged += (s, e) => Console.WriteLine("RadioButton2 CheckedChanged: " + radioButton2.Checked);
