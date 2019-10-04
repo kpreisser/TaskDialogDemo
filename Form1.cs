@@ -519,7 +519,7 @@ namespace TaskDialogDemo
                 dialog.Page = page2;
             };
 
-            page1.CheckBox = new TaskDialogCheckBox("CheckBox");
+            page1.CheckBox = new TaskDialogCheckBox("&CheckBox");
             page1.CheckBox.CheckedChanged += (s, e) => Console.WriteLine("CheckBox CheckedChanged: " + page1.CheckBox.Checked);
 
             var radioButton1 = page1.RadioButtons.Add("Radi&oButton 1");
