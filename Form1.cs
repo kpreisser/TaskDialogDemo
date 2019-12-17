@@ -293,7 +293,7 @@ namespace TaskDialogDemo
                 Expander = new TaskDialogExpander()
                 {
                     Text = "Initializing...",
-                    ExpandFooterArea = true
+                    Position = TaskDialogExpanderPosition.AfterFooter
                 },
 
                 StandardButtons =
@@ -479,7 +479,7 @@ namespace TaskDialogDemo
 
             page1.Expander = new TaskDialogExpander("Expander")
             {
-                ExpandFooterArea = true
+                Position = TaskDialogExpanderPosition.AfterFooter
             };
             page1.Expander.ExpandedChanged += (s, e) => Console.WriteLine("Expander ExpandedChanged: " + page1.Expander.Expanded);
 
