@@ -250,7 +250,7 @@ namespace TaskDialogDemo
                 Caption = "My Application",
                 MainInstruction = "Clean up database?",
                 Text = "Do you really want to do a clean-up?\nThis action is irreversible!",
-                Icon = TaskDialogIcon.SecurityWarningYellowBar,
+                Icon = TaskDialogIcon.ShieldWarningYellowBar,
                 AllowCancel = true,
                 // A modeless dialog can be minimizable.
                 CanBeMinimized = true,
@@ -320,7 +320,7 @@ namespace TaskDialogDemo
                 Caption = "My Application",
                 MainInstruction = "Success!",
                 Text = "The operation finished.",
-                Icon = TaskDialogIcon.SecuritySuccessGreenBar,
+                Icon = TaskDialogIcon.ShieldSuccessGreenBar,
                 CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks,
                 CanBeMinimized = true,
                 StandardButtons = TaskDialogButtons.Close,
@@ -418,7 +418,7 @@ namespace TaskDialogDemo
             {
                 MainInstruction = "Settings saved - Service Restart required",
                 Text = "The service needs to be restarted to apply the changes.",
-                Icon = TaskDialogIcon.SecuritySuccessGreenBar,
+                Icon = TaskDialogIcon.ShieldSuccessGreenBar,
                 StandardButtons = TaskDialogButtons.Close,
                 CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks
             };
