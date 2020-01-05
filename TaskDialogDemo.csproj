@@ -12,6 +12,9 @@
     <Reference Include="System.Windows.Forms">
       <HintPath>..\winforms\artifacts\bin\System.Windows.Forms\Debug\netcoreapp5.0\System.Windows.Forms.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.Primitives">
+      <HintPath>..\winforms\artifacts\bin\System.Windows.Forms.Primitives\Debug\netcoreapp5.0\System.Windows.Forms.Primitives.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
