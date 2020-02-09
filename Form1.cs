@@ -74,7 +74,6 @@ namespace TaskDialogDemo
                 Text = "Stopping the operation might leave your database in a corrupted state.",
                 Caption = "Confirmation (Task Dialog)",
                 Icon = TaskDialogIcon.Warning,
-                EnableHyperlinks = true,
                 AllowCancel = true,
 
                 CheckBox = new TaskDialogCheckBox()
@@ -82,27 +81,10 @@ namespace TaskDialogDemo
                     Text = "Do not show again"
                 },
 
-                Footer = new TaskDialogFooter()
-                {
-                    Text = "<a href=\"link1\">How should I decide?</a>",
-                    Icon = TaskDialogIcon.Information
-                },
-
                 StandardButtons =
                 {
                     new TaskDialogStandardButton(TaskDialogResult.Yes),
                     new TaskDialogStandardButton(TaskDialogResult.No, defaultButton: true)
-                }
-            };
-
-            page.HyperlinkClicked += (s, e) =>
-            {
-                if (e.Hyperlink == "link1")
-                {
-                    Process.Start(new ProcessStartInfo("https://dot.net/")
-                    {
-                        UseShellExecute = true
-                    })?.Dispose();
                 }
             };
 
@@ -457,14 +439,12 @@ namespace TaskDialogDemo
             {
                 Caption = Text,
                 MainInstruction = "Event Demo",
-                Text = "<a href=\"linkEvent\">Event</a> <a href=\"linkDemo\">Demo</a>...",
-                EnableHyperlinks = true,
+                Text = "Event Demo...",
                 CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinksNoIcon
             };
             page1.Created += (s, e) => Console.WriteLine("Page1 Created");
             page1.Destroyed += (s, e) => Console.WriteLine("Page1 Destroyed");
             page1.HelpRequest += (s, e) => Console.WriteLine("Page1 HelpRequest");
-            page1.HyperlinkClicked += (s, e) => Console.WriteLine("Page1 HyperlinkClicked: " + e.Hyperlink);
 
             page1.Expander = new TaskDialogExpander("Expander")
             {
