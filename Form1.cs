@@ -55,14 +55,20 @@ namespace TaskDialogDemo
             }
 
             // Show a task dialog (simple).// TODO: Add a parameter for setting the default button?
-            TaskDialogResult result = TaskDialog.ShowDialog(
+            TaskDialogButton result = TaskDialog.ShowDialog(
                 this,
                 text: "Stopping the operation might leave your database in a corrupted state.",
                 mainInstruction: "Are you sure you want to stop?",
                 caption: "Confirmation (Task Dialog)",
-                buttons: TaskDialogButtons.Yes | TaskDialogButtons.No,
-                icon: TaskDialogIcon.Warning);
-            if (result == TaskDialogResult.Yes)
+                buttons: new[]
+                {
+                    TaskDialogButton.Yes,
+                    TaskDialogButton.No
+                },
+                icon: TaskDialogIcon.Warning,
+                defaultButton: TaskDialogButton.No);
+
+            if (result == TaskDialogButton.Yes)
             {
                 Console.WriteLine("User confirmed to stop the operation.");
             }
@@ -81,18 +87,19 @@ namespace TaskDialogDemo
                     Text = "Do not show again"
                 },
 
-                StandardButtons =
+                Buttons =
                 {
-                    new TaskDialogStandardButton(TaskDialogResult.Yes),
-                    new TaskDialogStandardButton(TaskDialogResult.No, defaultButton: true)
-                }
+                    TaskDialogButton.Yes,
+                    TaskDialogButton.No
+                },
+
+                DefaultButton = TaskDialogButton.No
             };
 
             var dialog = new TaskDialog(page);
             var resultButton = dialog.ShowDialog(this);
 
-            if (resultButton is TaskDialogStandardButton standardButton &&
-                standardButton.Result == TaskDialogResult.Yes)
+            if (resultButton == TaskDialogButton.Yes)
             {
                 if (page.CheckBox.Checked)
                     Console.WriteLine("Do not show this confirmation again.");
@@ -103,15 +110,21 @@ namespace TaskDialogDemo
         private void ShowCloseDocumentTaskDialog()
         {
             // Create the page which we want to show in the dialog.
+            TaskDialogButton btnCancel = TaskDialogButton.Cancel;
+            TaskDialogButton btnSave = new TaskDialogButton("&Save");
+            TaskDialogButton btnDontSave = new TaskDialogButton("Do&n't save");
+
             var page = new TaskDialogPage()
             {
                 Caption = "My Application",
                 MainInstruction = "Do you want to save changes to Untitled?",
+                Buttons =
+                {
+                    btnCancel,
+                    btnSave,
+                    btnDontSave
+                }
             };
-
-            TaskDialogStandardButton btnCancel = page.StandardButtons.Add(TaskDialogResult.Cancel);
-            TaskDialogCustomButton btnSave = page.CustomButtons.Add("&Save");
-            TaskDialogCustomButton btnDontSave = page.CustomButtons.Add("Do&n't save");
 
             // Show a modal dialog, then check the result.
             var dialog = new TaskDialog(page);
@@ -131,7 +144,6 @@ namespace TaskDialogDemo
             {
                 Caption = "Minesweeper",
                 MainInstruction = "What level of difficulty do you want to play?",
-                CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks,
                 AllowCancel = true,
 
                 Footer = new TaskDialogFooter()
@@ -140,17 +152,17 @@ namespace TaskDialogDemo
                         "by clicking Options on the Game menu.",
                 },
 
-                CustomButtons =
+                Buttons =
                 {
-                    new TaskDialogCustomButton("&Beginner", "10 mines, 9 x 9 tile grid")
+                    new TaskDialogCommandLinkButton("&Beginner", "10 mines, 9 x 9 tile grid")
                     {
                         Tag = 10
                     },
-                    new TaskDialogCustomButton("&Intermediate", "40 mines, 16 x 16 tile grid")
+                    new TaskDialogCommandLinkButton("&Intermediate", "40 mines, 16 x 16 tile grid")
                     {
                         Tag = 40
                     },
-                    new TaskDialogCustomButton("&Advanced", "99 mines, 16 x 30 tile grid")
+                    new TaskDialogCommandLinkButton("&Advanced", "99 mines, 16 x 30 tile grid")
                     {
                         Tag = 99
                     }
@@ -171,21 +183,27 @@ namespace TaskDialogDemo
             const string textFormat = "Reconnecting in {0} seconds...";
             int remainingTenthSeconds = 50;
 
-            // Display the form's icon in the task dialog.
-            // Note however that the task dialog will not scale the icon.
+            var reconnectButton = new TaskDialogButton("&Reconnect now");
+            var cancelButton = TaskDialogButton.Cancel;
+
             var page = new TaskDialogPage()
             {
                 MainInstruction = "Connection lost; reconnecting...",
                 Text = string.Format(textFormat, (remainingTenthSeconds + 9) / 10),
+                // Display the form's icon in the task dialog.
+                // Note however that the task dialog will not scale the icon.
                 Icon = new TaskDialogIcon(this.Icon),
                 ProgressBar = new TaskDialogProgressBar()
                 {
                     State = TaskDialogProgressBarState.Paused
+                },
+                Buttons =
+                {
+                    reconnectButton,
+                    cancelButton
                 }
             };
 
-            var reconnectButton = page.CustomButtons.Add("&Reconnect now");
-            var cancelButton = page.StandardButtons.Add(TaskDialogResult.Cancel);
 
             // Create a WinForms timer that raises the Tick event every second.
             using (var timer = new Timer()
@@ -224,6 +242,12 @@ namespace TaskDialogDemo
         {
             var dialog = new TaskDialog();
 
+            // Disable the "Yes" button and only enable it when the check box is checked.
+            // Also, don't close the dialog when this button is clicked.
+            var initialButtonYes = TaskDialogButton.Yes;
+            initialButtonYes.Enabled = false;
+            initialButtonYes.AllowCloseDialog = false;
+
             var initialPage = new TaskDialogPage()
             {
                 Caption = "My Application",
@@ -239,14 +263,18 @@ namespace TaskDialogDemo
                     Text = "I know what I'm doing"
                 },
 
-                StandardButtons =
+                Buttons =
                 {
-                    new TaskDialogStandardButton(TaskDialogResult.No, defaultButton: true),
-                    // Disable the "Yes" button and only enable it when the check box is checked.
-                    // Also, don't close the dialog when this button is clicked.
-                    new TaskDialogStandardButton(TaskDialogResult.Yes, enabled: false, allowCloseDialog: false)
+                    TaskDialogButton.No,
+                    initialButtonYes
                 }
             };
+
+            // For the "In Progress" page, don't allow the dialog to close, by adding
+            // a disabled button (if no button was specified, the task dialog would
+            // get an (enabled) 'OK' button).
+            var inProgressCloseButton = TaskDialogButton.Close;
+            inProgressCloseButton.Enabled = false;
 
             var inProgressPage = new TaskDialogPage()
             {
@@ -267,24 +295,19 @@ namespace TaskDialogDemo
                     Position = TaskDialogExpanderPosition.AfterFooter
                 },
 
-                StandardButtons =
+                Buttons =
                 {
-                    // For the "In Progress" page, don't allow the dialog to close, by adding
-                    // a disabled button (if no button was specified, the task dialog would
-                    // get an (enabled) 'OK' button).
-                    new TaskDialogStandardButton(TaskDialogResult.Close)
-                    {
-                        Enabled = false
-                    }
+                    inProgressCloseButton
                 }
             };
 
             // Add an invisible Cancel button where we will intercept the Click event
             // to prevent the dialog from closing (when the User clicks the "X" button
             // in the title bar or presses ESC or Alt+F4).
-            var invisibleCancelButton = inProgressPage.StandardButtons.Add(TaskDialogResult.Cancel);
+            var invisibleCancelButton = TaskDialogButton.Cancel;
             invisibleCancelButton.Visible = false;
             invisibleCancelButton.AllowCloseDialog = false;
+            inProgressPage.Buttons.Add(invisibleCancelButton);
 
             var finishedPage = new TaskDialogPage()
             {
@@ -292,16 +315,18 @@ namespace TaskDialogDemo
                 MainInstruction = "Success!",
                 Text = "The operation finished.",
                 Icon = TaskDialogIcon.ShieldSuccessGreenBar,
-                CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks,
                 AllowMinimize = true,
-                StandardButtons = TaskDialogButtons.Close,
+                Buttons =
+                {
+                    TaskDialogButton.Close
+                }
             };
+
+            TaskDialogButton showResultsButton = new TaskDialogCommandLinkButton("Show &Results");
+            finishedPage.Buttons.Add(showResultsButton);
 
             // Enable the "Yes" button only when the checkbox is checked.
             TaskDialogCheckBox checkBox = initialPage.CheckBox;
-            TaskDialogStandardButton initialButtonYes = initialPage.StandardButtons
-                [TaskDialogResult.Yes];
-
             checkBox.CheckedChanged += (sender, e) =>
             {
                 initialButtonYes.Enabled = checkBox.Checked;
@@ -369,9 +394,6 @@ namespace TaskDialogDemo
                 timer = null;
             };
 
-            TaskDialogCustomButton showResultsButton = finishedPage.CustomButtons.Add(
-                "Show &Results");
-
             // Show the dialog (modeless).
             dialog.Page = initialPage;
             TaskDialogButton result = dialog.ShowDialog();
@@ -390,11 +412,15 @@ namespace TaskDialogDemo
                 MainInstruction = "Settings saved - Service Restart required",
                 Text = "The service needs to be restarted to apply the changes.",
                 Icon = TaskDialogIcon.ShieldSuccessGreenBar,
-                StandardButtons = TaskDialogButtons.Close,
-                CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinks
+                Buttons =
+                {
+                    TaskDialogButton.Close
+                }
             };
 
-            var restartNowButton = page.CustomButtons.Add("&Restart now");
+            var restartNowButton = new TaskDialogCommandLinkButton("&Restart now");
+            page.Buttons.Add(restartNowButton);
+
             restartNowButton.ElevationRequired = true;
             restartNowButton.Click += (s, e) =>
             {
@@ -412,7 +438,7 @@ namespace TaskDialogDemo
                 try
                 {
                     p = Process.Start(psi);
-                }                
+                }
                 catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
                 {
                     // The user canceled the UAC prompt, so don't close the dialog and
@@ -440,7 +466,6 @@ namespace TaskDialogDemo
                 Caption = Text,
                 MainInstruction = "Event Demo",
                 Text = "Event Demo...",
-                CustomButtonStyle = TaskDialogCustomButtonStyle.CommandLinksNoIcon
             };
             page1.Created += (s, e) => Console.WriteLine("Page1 Created");
             page1.Destroyed += (s, e) => Console.WriteLine("Page1 Destroyed");
@@ -452,11 +477,17 @@ namespace TaskDialogDemo
             };
             page1.Expander.ExpandedChanged += (s, e) => Console.WriteLine("Expander ExpandedChanged: " + page1.Expander.Expanded);
 
-            var buttonOK = page1.StandardButtons.Add(TaskDialogResult.OK);
-            var buttonHelp = page1.StandardButtons.Add(TaskDialogResult.Help);
-            var buttonCancelClose = page1.CustomButtons.Add("C&ancel Close", allowCloseDialog: false);
-            var buttonShowInnerDialog = page1.CustomButtons.Add("&Show (modeless) Inner Dialog", "(and don't cancel the Close)");
-            var buttonNavigate = page1.CustomButtons.Add("&Navigate", allowCloseDialog: false);
+            var buttonOK = TaskDialogButton.OK;
+            var buttonHelp = TaskDialogButton.Help;
+            var buttonCancelClose = new TaskDialogCommandLinkButton("C&ancel Close", allowCloseDialog: false);
+            var buttonShowInnerDialog = new TaskDialogCommandLinkButton("&Show (modeless) Inner Dialog", "(and don't cancel the Close)");
+            var buttonNavigate = new TaskDialogCommandLinkButton("&Navigate", allowCloseDialog: false);
+
+            page1.Buttons.Add(buttonOK);
+            page1.Buttons.Add(buttonHelp);
+            page1.Buttons.Add(buttonCancelClose);
+            page1.Buttons.Add(buttonShowInnerDialog);
+            page1.Buttons.Add(buttonNavigate);
 
             buttonOK.Click += (s, e) => Console.WriteLine($"Button '{s}' Click");
             buttonHelp.Click += (s, e) => Console.WriteLine($"Button '{s}' Click");
@@ -478,7 +509,10 @@ namespace TaskDialogDemo
                 var page2 = new TaskDialogPage()
                 {
                     MainInstruction = "AfterNavigation.",
-                    StandardButtons = TaskDialogButtons.Close
+                    Buttons =
+                    {
+                        TaskDialogButton.Close
+                    }
                 };
                 page2.Created += (s, e) => Console.WriteLine("Page2 Created");
                 page2.Destroyed += (s, e) => Console.WriteLine("Page2 Destroyed");
