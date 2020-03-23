@@ -55,18 +55,19 @@ namespace TaskDialogDemo
             }
 
             // Show a task dialog (simple).// TODO: Add a parameter for setting the default button?
-            TaskDialogButton result = TaskDialog.ShowDialog(
-                this,
-                text: "Stopping the operation might leave your database in a corrupted state.",
-                mainInstruction: "Are you sure you want to stop?",
-                caption: "Confirmation (Task Dialog)",
-                buttons: new[]
+            TaskDialogButton result = TaskDialog.ShowDialog(this, new TaskDialogPage()
+            {
+                Text = "Stopping the operation might leave your database in a corrupted state.",
+                MainInstruction = "Are you sure you want to stop?",
+                Caption = "Confirmation (Task Dialog)",
+                Buttons =
                 {
                     TaskDialogButton.Yes,
                     TaskDialogButton.No
                 },
-                icon: TaskDialogIcon.Warning,
-                defaultButton: TaskDialogButton.No);
+                Icon = TaskDialogIcon.Warning,
+                DefaultButton = TaskDialogButton.No
+            });
 
             if (result == TaskDialogButton.Yes)
             {
@@ -96,8 +97,7 @@ namespace TaskDialogDemo
                 DefaultButton = TaskDialogButton.No
             };
 
-            var dialog = new TaskDialog(page);
-            var resultButton = dialog.ShowDialog(this);
+            var resultButton = TaskDialog.ShowDialog(this, page);
 
             if (resultButton == TaskDialogButton.Yes)
             {
@@ -127,8 +127,7 @@ namespace TaskDialogDemo
             };
 
             // Show a modal dialog, then check the result.
-            var dialog = new TaskDialog(page);
-            TaskDialogButton result = dialog.ShowDialog(this);
+            TaskDialogButton result = TaskDialog.ShowDialog(this, page);
 
             if (result == btnSave)
                 Console.WriteLine("Saving");
@@ -169,8 +168,7 @@ namespace TaskDialogDemo
                 }
             };
 
-            var dialog = new TaskDialog(page);
-            TaskDialogButton result = dialog.ShowDialog(this);
+            TaskDialogButton result = TaskDialog.ShowDialog(this, page);
 
             if (result.Tag is int resultingMines)
                 Console.WriteLine($"Playing with {resultingMines} mines...");
@@ -230,7 +228,7 @@ namespace TaskDialogDemo
                     }
                 };
 
-                TaskDialogButton result = new TaskDialog(page).ShowDialog(this);
+                TaskDialogButton result = TaskDialog.ShowDialog(this, page);
                 if (result == reconnectButton)
                     Console.WriteLine("Reconnecting.");
                 else
@@ -240,8 +238,6 @@ namespace TaskDialogDemo
 
         private void ShowMultiPageTaskDialog()
         {
-            var dialog = new TaskDialog();
-
             // Disable the "Yes" button and only enable it when the check box is checked.
             // Also, don't close the dialog when this button is clicked.
             var initialButtonYes = TaskDialogButton.Yes;
@@ -337,7 +333,7 @@ namespace TaskDialogDemo
             {
                 // Navigate to the "In Progress" page that displays the
                 // current progress of the background work.
-                dialog.Page = inProgressPage;
+                initialPage.Navigate(inProgressPage);
 
                 // NOTE: When you implement a "In Progress" page that represents
                 // background work that is done e.g. by a separate thread/task,
@@ -383,7 +379,7 @@ namespace TaskDialogDemo
                     else if (currentTimerValue == 41)
                     {
                         // Work is finished, so navigate to the third page.
-                        dialog.Page = finishedPage;
+                        inProgressPage.Navigate(finishedPage);
                     }
                 };
             };
@@ -395,8 +391,7 @@ namespace TaskDialogDemo
             };
 
             // Show the dialog (modeless).
-            dialog.Page = initialPage;
-            TaskDialogButton result = dialog.ShowDialog();
+            TaskDialogButton result = TaskDialog.ShowDialog(initialPage);
             if (result == showResultsButton)
             {
                 Console.WriteLine("Showing Results!");
@@ -405,8 +400,6 @@ namespace TaskDialogDemo
 
         private void ShowElevatedProcessTaskDialog()
         {
-            var dialog = new TaskDialog();
-
             var page = new TaskDialogPage()
             {
                 MainInstruction = "Settings saved - Service Restart required",
@@ -449,18 +442,11 @@ namespace TaskDialogDemo
                 }
             };
 
-            dialog.Page = page;
-            dialog.ShowDialog(this);
+            TaskDialog.ShowDialog(this, page);
         }
 
         private void ShowEventsDemoTaskDialog()
         {
-            var dialog = new TaskDialog();
-            dialog.Opened += (s, e) => Console.WriteLine("Dialog Opened");
-            dialog.Shown += (s, e) => Console.WriteLine("Dialog Shown");
-            dialog.Closing += (s, e) => Console.WriteLine("Dialog Closing - CloseButton: " + e.CloseButton);
-            dialog.Closed += (s, e) => Console.WriteLine("Dialog Closed");
-
             var page1 = new TaskDialogPage()
             {
                 Caption = Text,
@@ -498,7 +484,9 @@ namespace TaskDialogDemo
             buttonShowInnerDialog.Click += (s, e) =>
             {
                 Console.WriteLine($"Button '{s}' Click");
-                TaskDialog.ShowDialog("Inner Dialog");
+                TaskDialog.ShowDialog(new TaskDialogPage() {
+                    Text = "Inner Dialog"
+                });
                 Console.WriteLine($"(returns) Button '{s}' Click");
             };
             buttonNavigate.Click += (s, e) =>
@@ -517,7 +505,7 @@ namespace TaskDialogDemo
                 page2.Created += (s, e) => Console.WriteLine("Page2 Created");
                 page2.Destroyed += (s, e) => Console.WriteLine("Page2 Destroyed");
 
-                dialog.Page = page2;
+                page1.Navigate(page2);
             };
 
             page1.CheckBox = new TaskDialogCheckBox("&CheckBox");
@@ -529,8 +517,7 @@ namespace TaskDialogDemo
             radioButton1.CheckedChanged += (s, e) => Console.WriteLine("RadioButton1 CheckedChanged: " + radioButton1.Checked);
             radioButton2.CheckedChanged += (s, e) => Console.WriteLine("RadioButton2 CheckedChanged: " + radioButton2.Checked);
 
-            dialog.Page = page1;
-            var dialogResult = dialog.ShowDialog();
+            var dialogResult = TaskDialog.ShowDialog(page1);
             Console.WriteLine("---> Dialog Result: " + dialogResult);
         }
     }
