@@ -58,7 +58,7 @@ namespace TaskDialogDemo
             TaskDialogButton result = TaskDialog.ShowDialog(this, new TaskDialogPage()
             {
                 Text = "Stopping the operation might leave your database in a corrupted state.",
-                MainInstruction = "Are you sure you want to stop?",
+                Heading = "Are you sure you want to stop?",
                 Caption = "Confirmation (Task Dialog)",
                 Buttons =
                 {
@@ -77,7 +77,7 @@ namespace TaskDialogDemo
             // Show a task dialog (enhanced).
             var page = new TaskDialogPage()
             {
-                MainInstruction = "Are you sure you want to stop?",
+                Heading = "Are you sure you want to stop?",
                 Text = "Stopping the operation might leave your database in a corrupted state.",
                 Caption = "Confirmation (Task Dialog)",
                 Icon = TaskDialogIcon.Warning,
@@ -117,7 +117,7 @@ namespace TaskDialogDemo
             var page = new TaskDialogPage()
             {
                 Caption = "My Application",
-                MainInstruction = "Do you want to save changes to Untitled?",
+                Heading = "Do you want to save changes to Untitled?",
                 Buttons =
                 {
                     btnCancel,
@@ -142,10 +142,10 @@ namespace TaskDialogDemo
             var page = new TaskDialogPage()
             {
                 Caption = "Minesweeper",
-                MainInstruction = "What level of difficulty do you want to play?",
+                Heading = "What level of difficulty do you want to play?",
                 AllowCancel = true,
 
-                Footer = new TaskDialogFooter()
+                Footnote = new TaskDialogFootnote()
                 {
                     Text = "Note: You can change the difficulty level later " +
                         "by clicking Options on the Game menu.",
@@ -186,7 +186,7 @@ namespace TaskDialogDemo
 
             var page = new TaskDialogPage()
             {
-                MainInstruction = "Connection lost; reconnecting...",
+                Heading = "Connection lost; reconnecting...",
                 Text = string.Format(textFormat, (remainingTenthSeconds + 9) / 10),
                 // Display the form's icon in the task dialog.
                 // Note however that the task dialog will not scale the icon.
@@ -247,7 +247,7 @@ namespace TaskDialogDemo
             var initialPage = new TaskDialogPage()
             {
                 Caption = "My Application",
-                MainInstruction = "Clean up database?",
+                Heading = "Clean up database?",
                 Text = "Do you really want to do a clean-up?\nThis action is irreversible!",
                 Icon = TaskDialogIcon.ShieldWarningYellowBar,
                 AllowCancel = true,
@@ -275,7 +275,7 @@ namespace TaskDialogDemo
             var inProgressPage = new TaskDialogPage()
             {
                 Caption = "My Application",
-                MainInstruction = "Operation in progress...",
+                Heading = "Operation in progress...",
                 Text = "Please wait while the operation is in progress.",
                 Icon = TaskDialogIcon.Information,
                 AllowMinimize = true,
@@ -288,7 +288,7 @@ namespace TaskDialogDemo
                 Expander = new TaskDialogExpander()
                 {
                     Text = "Initializing...",
-                    Position = TaskDialogExpanderPosition.AfterFooter
+                    Position = TaskDialogExpanderPosition.AfterFootnote
                 },
 
                 Buttons =
@@ -308,7 +308,7 @@ namespace TaskDialogDemo
             var finishedPage = new TaskDialogPage()
             {
                 Caption = "My Application",
-                MainInstruction = "Success!",
+                Heading = "Success!",
                 Text = "The operation finished.",
                 Icon = TaskDialogIcon.ShieldSuccessGreenBar,
                 AllowMinimize = true,
@@ -402,7 +402,7 @@ namespace TaskDialogDemo
         {
             var page = new TaskDialogPage()
             {
-                MainInstruction = "Settings saved - Service Restart required",
+                Heading = "Settings saved - Service Restart required",
                 Text = "The service needs to be restarted to apply the changes.",
                 Icon = TaskDialogIcon.ShieldSuccessGreenBar,
                 Buttons =
@@ -450,7 +450,7 @@ namespace TaskDialogDemo
             var page1 = new TaskDialogPage()
             {
                 Caption = Text,
-                MainInstruction = "Event Demo",
+                Heading = "Event Demo",
                 Text = "Event Demo...",
             };
             page1.Created += (s, e) => Console.WriteLine("Page1 Created");
@@ -459,7 +459,7 @@ namespace TaskDialogDemo
 
             page1.Expander = new TaskDialogExpander("Expander")
             {
-                Position = TaskDialogExpanderPosition.AfterFooter
+                Position = TaskDialogExpanderPosition.AfterFootnote
             };
             page1.Expander.ExpandedChanged += (s, e) => Console.WriteLine("Expander ExpandedChanged: " + page1.Expander.Expanded);
 
@@ -496,7 +496,7 @@ namespace TaskDialogDemo
                 // Navigate to a new page.
                 var page2 = new TaskDialogPage()
                 {
-                    MainInstruction = "AfterNavigation.",
+                    Heading = "AfterNavigation.",
                     Buttons =
                     {
                         TaskDialogButton.Close
