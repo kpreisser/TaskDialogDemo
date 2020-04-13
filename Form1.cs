@@ -83,7 +83,7 @@ namespace TaskDialogDemo
                 Icon = TaskDialogIcon.Warning,
                 AllowCancel = true,
 
-                CheckBox = new TaskDialogCheckBox()
+                Verification = new TaskDialogVerificationCheckBox()
                 {
                     Text = "Do not show again"
                 },
@@ -101,7 +101,7 @@ namespace TaskDialogDemo
 
             if (resultButton == TaskDialogButton.Yes)
             {
-                if (page.CheckBox.Checked)
+                if (page.Verification.Checked)
                     Console.WriteLine("Do not show this confirmation again.");
                 Console.WriteLine("User confirmed to stop the operation.");
             }
@@ -254,7 +254,7 @@ namespace TaskDialogDemo
                 // A modeless dialog can be minimizable.
                 AllowMinimize = true,
 
-                CheckBox = new TaskDialogCheckBox()
+                Verification = new TaskDialogVerificationCheckBox()
                 {
                     Text = "I know what I'm doing"
                 },
@@ -322,7 +322,7 @@ namespace TaskDialogDemo
             finishedPage.Buttons.Add(showResultsButton);
 
             // Enable the "Yes" button only when the checkbox is checked.
-            TaskDialogCheckBox checkBox = initialPage.CheckBox;
+            TaskDialogVerificationCheckBox checkBox = initialPage.Verification;
             checkBox.CheckedChanged += (sender, e) =>
             {
                 initialButtonYes.Enabled = checkBox.Checked;
@@ -414,7 +414,7 @@ namespace TaskDialogDemo
             var restartNowButton = new TaskDialogCommandLinkButton("&Restart now");
             page.Buttons.Add(restartNowButton);
 
-            restartNowButton.ElevationRequired = true;
+            restartNowButton.ShowShieldIcon = true;
             restartNowButton.Click += (s, e) =>
             {
                 restartNowButton.AllowCloseDialog = true;
@@ -484,7 +484,8 @@ namespace TaskDialogDemo
             buttonShowInnerDialog.Click += (s, e) =>
             {
                 Console.WriteLine($"Button '{s}' Click");
-                TaskDialog.ShowDialog(new TaskDialogPage() {
+                TaskDialog.ShowDialog(new TaskDialogPage()
+                {
                     Text = "Inner Dialog"
                 });
                 Console.WriteLine($"(returns) Button '{s}' Click");
@@ -508,8 +509,8 @@ namespace TaskDialogDemo
                 page1.Navigate(page2);
             };
 
-            page1.CheckBox = new TaskDialogCheckBox("&CheckBox");
-            page1.CheckBox.CheckedChanged += (s, e) => Console.WriteLine("CheckBox CheckedChanged: " + page1.CheckBox.Checked);
+            page1.Verification = new TaskDialogVerificationCheckBox("&CheckBox");
+            page1.Verification.CheckedChanged += (s, e) => Console.WriteLine("CheckBox CheckedChanged: " + page1.Verification.Checked);
 
             var radioButton1 = page1.RadioButtons.Add("Radi&oButton 1");
             var radioButton2 = page1.RadioButtons.Add("RadioB&utton 2");
