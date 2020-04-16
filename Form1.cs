@@ -427,10 +427,9 @@ namespace TaskDialogDemo
                     Verb = "runas"
                 };
 
-                Process p;
                 try
                 {
-                    p = Process.Start(psi);
+                    Process.Start(psi)?.Dispose();
                 }
                 catch (Win32Exception ex) when (ex.NativeErrorCode == 1223)
                 {
