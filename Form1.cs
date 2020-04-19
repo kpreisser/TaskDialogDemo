@@ -54,7 +54,7 @@ namespace TaskDialogDemo
                 Console.WriteLine("User confirmed to stop the operation.");
             }
 
-            // Show a task dialog (simple).// TODO: Add a parameter for setting the default button?
+            // Show a task dialog (simple).
             TaskDialogButton result = TaskDialog.ShowDialog(this, new TaskDialogPage()
             {
                 Text = "Stopping the operation might leave your database in a corrupted state.",
@@ -203,7 +203,7 @@ namespace TaskDialogDemo
             };
 
 
-            // Create a WinForms timer that raises the Tick event every second.
+            // Create a WinForms timer that raises the Tick event every tenth second.
             using (var timer = new Timer()
             {
                 Enabled = true,
@@ -263,7 +263,8 @@ namespace TaskDialogDemo
                 {
                     TaskDialogButton.No,
                     initialButtonYes
-                }
+                },
+                DefaultButton = TaskDialogButton.No
             };
 
             // For the "In Progress" page, don't allow the dialog to close, by adding
