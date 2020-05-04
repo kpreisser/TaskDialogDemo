@@ -385,8 +385,12 @@ namespace TaskDialogDemo
 
             static async IAsyncEnumerable<int> StreamBackgroundOperationProgressAsync()
             {
+                // Note: The code here will run in the GUI thread - use
+                // "await Task.Run(...)" to schedule CPU-intensive operations in a
+                // worker thread.
+
                 // Wait a bit before reporting the first progress.
-                await Task.Delay(2500);
+                await Task.Delay(2800);
 
                 for (int i = 0; i <= 100; i += 4)
                 {
