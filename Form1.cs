@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace TaskDialogDemo
@@ -348,47 +350,29 @@ namespace TaskDialogDemo
                 // for more information.
             };
 
-            // Simulate work by using a WinForms timer where we are updating the
+            // Simulate work by starting an async operation from which we are updating the
             // progress bar and the expander with the current status.
-            Timer? timer = null;
-            inProgressPage.Created += (s, e) =>
+            inProgressPage.Created += async (s, e) =>
             {
-                // The page is now being displayed, so create the timer.
-                timer = new System.Windows.Forms.Timer()
+                // Run the background operation and iterate over the streamed values to update
+                // the progress. Because we call the async method from the GUI thread,
+                // it will use this thread's synchronization context to run the continuations,
+                // so we don't need to use Control.[Begin]Invoke() to schedule the callbacks.
+                var progressBar = inProgressPage.ProgressBar;
+
+                await foreach (int progressValue in StreamBackgroundOperationProgressAsync())
                 {
-                    Interval = 200,
-                    Enabled = true
-                };
+                    // When we display the first progress, switch the marquee progress bar
+                    // to a regular one.
+                    if (progressBar.State == TaskDialogProgressBarState.Marquee)
+                        progressBar.State = TaskDialogProgressBarState.Normal;
 
-                int currentTimerValue = 0;
-                timer.Tick += (s2, e2) =>
-                {
-                    currentTimerValue++;
+                    progressBar.Value = progressValue;
+                    inProgressPage.Expander.Text = $"Progress: {progressValue} %";
+                }
 
-                    var progressBar = inProgressPage.ProgressBar;
-                    if (currentTimerValue >= 15 && currentTimerValue <= 40)
-                    {
-                        if (currentTimerValue == 15)
-                        {
-                            // Switch the progress bar to a regular one.
-                            progressBar.State = TaskDialogProgressBarState.Normal;
-                        }
-
-                        progressBar.Value = (currentTimerValue - 15) * 4;
-                        inProgressPage.Expander.Text = $"Progress: {progressBar.Value} %";
-                    }
-                    else if (currentTimerValue == 41)
-                    {
-                        // Work is finished, so navigate to the third page.
-                        inProgressPage.Navigate(finishedPage);
-                    }
-                };
-            };
-            inProgressPage.Destroyed += (s, e) =>
-            {
-                // The page is being destroyed, so dispose of the timer.
-                timer!.Dispose();
-                timer = null;
+                // Work is finished, so navigate to the third page.
+                inProgressPage.Navigate(finishedPage);
             };
 
             // Show the dialog (modeless).
@@ -396,6 +380,22 @@ namespace TaskDialogDemo
             if (result == showResultsButton)
             {
                 Console.WriteLine("Showing Results!");
+            }
+
+
+            static async IAsyncEnumerable<int> StreamBackgroundOperationProgressAsync()
+            {
+                // Wait a bit before reporting the first progress.
+                await Task.Delay(2500);
+
+                for (int i = 0; i <= 100; i += 4)
+                {
+                    // Report the progress.
+                    yield return i;
+
+                    // Wait a bit to simulate work.
+                    await Task.Delay(200);
+                }
             }
         }
 
