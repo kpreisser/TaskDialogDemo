@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace TaskDialogDemo
 {
-    public partial class Form1 : Form
+    public class Form1 : Form
     {
         public Form1()
         {
@@ -25,10 +25,9 @@ namespace TaskDialogDemo
                     Size = new Size(180, 23),
                     Location = new Point(nextButton / 20 * 200 + 20, nextButton % 20 * 30)
                 };
-                button.Click += (s, e) =>
-                {
-                    action();
-                };
+
+                button.Click += (s, e) => action();
+
                 Controls.Add(button);
             }
 
@@ -51,6 +50,7 @@ namespace TaskDialogDemo
                 buttons: MessageBoxButtons.YesNo,
                 icon: MessageBoxIcon.Warning,
                 defaultButton: MessageBoxDefaultButton.Button2);
+
             if (messageBoxResult == DialogResult.Yes)
             {
                 Console.WriteLine("User confirmed to stop the operation.");
@@ -105,6 +105,7 @@ namespace TaskDialogDemo
             {
                 if (page.Verification.Checked)
                     Console.WriteLine("Do not show this confirmation again.");
+
                 Console.WriteLine("User confirmed to stop the operation.");
             }
         }
@@ -203,7 +204,6 @@ namespace TaskDialogDemo
                     cancelButton
                 }
             };
-
 
             // Create a WinForms timer that raises the Tick event every tenth second.
             using (var timer = new Timer()
@@ -457,6 +457,7 @@ namespace TaskDialogDemo
                 Heading = "Event Demo",
                 Text = "Event Demo...",
             };
+
             page1.Created += (s, e) => Console.WriteLine("Page1 Created");
             page1.Destroyed += (s, e) => Console.WriteLine("Page1 Destroyed");
             page1.HelpRequest += (s, e) => Console.WriteLine("Page1 HelpRequest");
@@ -465,6 +466,7 @@ namespace TaskDialogDemo
             {
                 Position = TaskDialogExpanderPosition.AfterFootnote
             };
+
             page1.Expander.ExpandedChanged += (s, e) => Console.WriteLine("Expander ExpandedChanged: " + page1.Expander.Expanded);
 
             var buttonOK = TaskDialogButton.OK;
@@ -481,10 +483,12 @@ namespace TaskDialogDemo
 
             buttonOK.Click += (s, e) => Console.WriteLine($"Button '{s}' Click");
             buttonHelp.Click += (s, e) => Console.WriteLine($"Button '{s}' Click");
+
             buttonCancelClose.Click += (s, e) =>
             {
                 Console.WriteLine($"Button '{s}' Click");
             };
+
             buttonShowInnerDialog.Click += (s, e) =>
             {
                 Console.WriteLine($"Button '{s}' Click");
@@ -494,6 +498,7 @@ namespace TaskDialogDemo
                 });
                 Console.WriteLine($"(returns) Button '{s}' Click");
             };
+
             buttonNavigate.Click += (s, e) =>
             {
                 Console.WriteLine($"Button '{s}' Click");
